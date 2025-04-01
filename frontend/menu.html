@@ -317,42 +317,6 @@
             console.log('Final total:', total);
         }
 
-        function submitOrder() {
-            if (order.length === 0) {
-                alert("Your order is empty. Please add items to your order.");
-                return;
-            }
-
-            const orderData = JSON.stringify(order);
-            console.log("Order data to be submitted:", orderData);
-
-            // Replace '/api/submit-order' with the actual URL of your server endpoint
-            fetch('/api/submit-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: orderData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json(); // Or response.text() if your server sends plain text
-            })
-            .then(data => {
-                console.log('Success:', data);
-                alert("Order placed successfully!");
-                // Optionally clear the order display after successful submission
-                order.length = 0;
-                updateOrderDisplay();
-            })
-            .catch((error) => {
-                console.error('Error submitting order:', error);
-                alert("There was an error placing your order. Please try again.");
-            });
-        }
-
         function increaseQuantity(itemName) {
             const item = order.find(item => item.name === itemName);
             if (item) {
@@ -371,6 +335,42 @@
                 order.splice(index, 1);
                 updateOrderDisplay();
             }
+        }
+
+        function submitOrder() {
+            if (order.length === 0) {
+                alert("Your order is empty. Please add items to your order.");
+                return;
+            }
+
+            const orderData = JSON.stringify(order);
+            console.log("Order data to be submitted:", orderData);
+
+            const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbxsRL_gnUxwhvc7HHNIET6t9r4RJZgb3OPxMZvEb_PhwkW1ckmNl8jPPGX3jyqZwSkiJA/exec'; // Replace with your Web App URL
+
+            fetch(appsScriptUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: orderData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                if (data.result === 'success') {
+                    alert("Order placed successfully!");
+                    // Optionally clear the order display after successful submission
+                    order.length = 0;
+                    updateOrderDisplay();
+                } else {
+                    alert("Error placing order: " + data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error submitting order:', error);
+                alert("There was an error placing your order. Please try again.");
+            });
         }
     </script>
 </body>
