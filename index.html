@@ -313,8 +313,9 @@
         const submitOrderButton = document.getElementById('submit-order-button');
 
         addToOrderButtons.forEach(button => {
+            console.log('Attaching listener to:', button.id);
             button.addEventListener('click', function() {
-                console.log('Add to Order button clicked!');
+                console.log('Add to Order button clicked! (ID:', this.parentNode.id, ')');
                 const menuItem = this.parentNode;
                 const itemName = menuItem.dataset.itemName;
                 addItemToOrder(itemName);
@@ -371,5 +372,3 @@
 
             // Display the total
             const totalListItem = document.createElement('li');
-            totalListItem.style.fontWeight = 'bold';
-            totalListItem.style.borderTop = '2px solid #c
