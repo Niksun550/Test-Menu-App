@@ -359,30 +359,41 @@
             }
         }
 
-        function submitOrder() {
-            if (order.length === 0) {
-                alert("Your order is empty. Please add items to your order.");
-                return;
-            }
+     function submitOrder() {
+    if (order.length === 0) {
+        alert("Your order is empty. Please add items to your order.");
+        return;
+    }
 
-            const orderData = JSON.stringify(order);
-            console.log("Order data to be submitted to Firebase:", orderData);
+    const tableNumberInput = document.getElementById('table-number');
+    const tableNumber = tableNumberInput.value.trim();
 
-            db.collection("orders").add({
-                order: order,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then((docRef) => {
-                console.log("Order placed with ID: ", docRef.id);
-                alert("Order placed successfully!");
-                order.length = 0;
-                updateOrderDisplay();
-            })
-            .catch((error) => {
-                console.error("Error placing order to Firebase: ", error);
-                alert("There was an error placing your order. Please try again.");
-            });
-        }
+    if (!tableNumber) {
+        alert("Please enter your table number.");
+        return;
+    }
+
+    const orderData = JSON.stringify(order);
+    console.log("Order data to be submitted to Firebase:", orderData);
+    console.log("Table Number:", tableNumber);
+
+    db.collection("orders").add({
+        tableNumber: parseInt(tableNumber), // Store table number as a number
+        order: order,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then((docRef) => {
+        console.log("Order placed with ID: ", docRef.id);
+        alert("Order placed successfully!");
+        order.length = 0;
+        updateOrderDisplay();
+        tableNumberInput.value = ''; // Clear the table number input
+    })
+    .catch((error) => {
+        console.error("Error placing order to Firebase: ", error);
+        alert("There was an error placing your order. Please try again.");
+    });
+}
     </script>
 </body>
 </html>
