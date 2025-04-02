@@ -3,20 +3,127 @@
 <head>
     <title>Chef Orders</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Basic styling for the table */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 10px;
+            background-color: #f8f9fa;
+            color: #495057;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        h2 {
+            margin-top: 15px;
+            color: #28a745;
+            border-bottom: 1px solid #ced4da;
+            padding-bottom: 5px;
+            font-size: 1.5em;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow-x: auto; /* Enable horizontal scrolling for wide tables */
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #dee2e6;
             padding: 8px;
             text-align: left;
+            font-size: 0.9em;
+            white-space: nowrap; /* Prevent text wrapping in columns */
         }
         th {
-            background-color: #f4f4f4;
+            background-color: #e9ecef;
+            font-weight: bold;
+            color: #495057;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .order-item-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .order-item-list li {
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+        .order-item-list li:last-child {
+            border-bottom: none;
+        }
+        .status-container {
+            margin-top: 10px;
+            text-align: right;
+        }
+        .status-label {
+            margin-right: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            font-size: 0.9em;
+        }
+        .status-button {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .status-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Media query for screens 600px or less */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            h2 {
+                font-size: 1.3em;
+            }
+            table {
+                border: none;
+                box-shadow: none;
+            }
+            th {
+                display: none; /* Hide headers on small screens */
+            }
+            td {
+                display: block;
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%; /* Make space for label */
+            }
+            td:last-child {
+                border-bottom: none;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 6px;
+                font-weight: bold;
+                font-size: 0.8em;
+            }
+            .status-container {
+                text-align: left;
+            }
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -28,7 +135,7 @@
         </div>
 
     <script>
-        // Replace with your actual Firebase configuration (same as in menu.html)
+        // Replace with your actual Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
           authDomain: "testmenu-4ed51.firebaseapp.com",
@@ -56,13 +163,30 @@
                 tableDiv.innerHTML = `<h2>Table ${tableNumber}</h2>`;
                 const table = document.createElement('table');
                 const thead = document.createElement('thead');
-                thead.innerHTML = '<tr><th>Item</th><th>Quantity</th><th>Price</th></tr>';
+                thead.innerHTML = '<tr><th>Item</th><th>Quantity</th><th>Price</th><th>Status</th><th>Actions</th></tr>';
                 table.appendChild(thead);
                 const tbody = document.createElement('tbody');
                 tableOrders.forEach(orderData => {
+                    const orderId = orderData.id; // Get the document ID
                     orderData.order.forEach(item => {
                         const row = document.createElement('tr');
-                        row.innerHTML = `<td>${item.name}</td><td>${item.quantity}</td><td>₹${item.price.toFixed(2)}</td>`;
+                        row.innerHTML = `
+                            <td data-label="Item">${item.name}</td>
+                            <td data-label="Quantity">${item.quantity}</td>
+                            <td data-label="Price">₹${item.price.toFixed(2)}</td>
+                            <td data-label="Status">
+                                <span id="status-${orderId}">${orderData.status}</span>
+                            </td>
+                            <td data-label="Actions">
+                                <select id="status-select-${orderId}" class="status-select">
+                                    <option value="pending" ${orderData.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="preparing" ${orderData.status === 'preparing' ? 'selected' : ''}>Preparing</option>
+                                    <option value="ready" ${orderData.status === 'ready' ? 'selected' : ''}>Ready</option>
+                                    <option value="served" ${orderData.status === 'served' ? 'selected' : ''}>Served</option>
+                                </select>
+                                <button class="status-button" onclick="updateOrderStatus('${orderId}')">Update</button>
+                            </td>
+                        `;
                         tbody.appendChild(row);
                     });
                 });
@@ -79,6 +203,8 @@
                 querySnapshot.forEach((doc) => {
                     const orderData = doc.data();
                     const tableNumber = orderData.tableNumber;
+                    const orderId = doc.id; // Get the document ID
+                    orderData.id = orderId; // Add the ID to the orderData object
                     if (ordersByTable[tableNumber]) {
                         ordersByTable[tableNumber].push(orderData);
                     } else {
@@ -87,6 +213,27 @@
                 });
                 displayOrders(ordersByTable);
             });
+
+        function updateOrderStatus(orderId) {
+            const statusSelect = document.getElementById(`status-select-${orderId}`);
+            const newStatus = statusSelect.value;
+
+            db.collection("orders").doc(orderId).update({
+                status: newStatus
+            })
+            .then(() => {
+                console.log(`Order ${orderId} status updated to ${newStatus}`);
+                // Optionally update the displayed status without a full refresh
+                const statusSpan = document.getElementById(`status-${orderId}`);
+                if (statusSpan) {
+                    statusSpan.textContent = newStatus;
+                }
+            })
+            .catch((error) => {
+                console.error("Error updating order status: ", error);
+                alert("Error updating order status. Please try again.");
+            });
+        }
     </script>
 </body>
 </html>
