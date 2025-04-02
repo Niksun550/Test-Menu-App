@@ -290,85 +290,81 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Replace with your actual Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
-          authDomain: "testmenu-4ed51.firebaseapp.com",
-          projectId: "testmenu-4ed51",
-          storageBucket: "testmenu-4ed51.firebasestorage.app",
-          messagingSenderId: "98263305480",
-          appId: "1:98263305480:web:024158941cb5f53225f0bd",
-          measurementId: "G-CX0JDH1RDP"
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            // Replace with your actual Firebase configuration
+            const firebaseConfig = {
+              apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
+              authDomain: "testmenu-4ed51.firebaseapp.com",
+              projectId: "testmenu-4ed51",
+              storageBucket: "testmenu-4ed51.firebasestorage.app",
+              messagingSenderId: "98263305480",
+              appId: "1:98263305480:web:024158941cb5f53225f0bd",
+              measurementId: "G-CX0JDH1RDP"
+            };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
 
-        // Initialize Firestore
-        const db = firebase.firestore();
+            // Initialize Firestore
+            const db = firebase.firestore();
 
-        const addToOrderButtons = document.querySelectorAll('.add-button');
-        const order = []; // Array to store ordered items with quantities and prices
-        const orderItemsList = document.getElementById('order-items'); // Get the <ul> element
-        const submitOrderButton = document.getElementById('submit-order-button');
+            const addToOrderButtons = document.querySelectorAll('.add-button');
+            console.log('Number of Add to Order buttons found:', addToOrderButtons.length);
 
-        addToOrderButtons.forEach(button => {
-            console.log('Attaching listener to:', button.id);
-            button.addEventListener('click', function() {
-                console.log('Add to Order button clicked! (ID:', this.parentNode.id, ')');
-                const menuItem = this.parentNode;
-                const itemName = menuItem.dataset.itemName;
-                addItemToOrder(itemName);
-                console.log('Order after addItemToOrder:', order);
-                updateOrderDisplay();
-                alert(`${itemName} added to order!`);
+            const order = []; // Array to store ordered items with quantities and prices
+            const orderItemsList = document.getElementById('order-items'); // Get the <ul> element
+            const submitOrderButton = document.getElementById('submit-order-button');
+
+            addToOrderButtons.forEach(button => {
+                console.log('Attaching listener to:', button.id);
+                button.addEventListener('click', function() {
+                    console.log('Add to Order button clicked! (ID:', this.parentNode.id, ')');
+                    const menuItem = this.parentNode;
+                    const itemName = menuItem.dataset.itemName;
+                    addItemToOrder(itemName);
+                    console.log('Order after addItemToOrder:', order);
+                    updateOrderDisplay();
+                    alert(`${itemName} added to order!`);
+                });
             });
-        });
 
-        submitOrderButton.addEventListener('click', submitOrder);
+            submitOrderButton.addEventListener('click', submitOrder);
 
-        function addItemToOrder(itemName) {
-            console.log('addItemToOrder called for:', itemName);
-            const menuItemElement = Array.from(document.querySelectorAll('.menu-item')).find(item => item.dataset.itemName === itemName);
-            if (menuItemElement) {
-                console.log('Found menuItemElement:', menuItemElement);
-                const itemPrice = parseFloat(menuItemElement.dataset.itemPrice);
-                console.log('Item price:', itemPrice);
-                const existingItem = order.find(item => item.name === itemName);
-                if (existingItem) {
-                    existingItem.quantity++;
+            function addItemToOrder(itemName) {
+                console.log('addItemToOrder called for:', itemName);
+                const menuItemElement = Array.from(document.querySelectorAll('.menu-item')).find(item => item.dataset.itemName === itemName);
+                if (menuItemElement) {
+                    console.log('Found menuItemElement:', menuItemElement);
+                    const itemPrice = parseFloat(menuItemElement.dataset.itemPrice);
+                    console.log('Item price:', itemPrice);
+                    const existingItem = order.find(item => item.name === itemName);
+                    if (existingItem) {
+                        existingItem.quantity++;
+                    } else {
+                        order.push({ name: itemName, quantity: 1, price: itemPrice });
+                    }
                 } else {
-                    order.push({ name: itemName, quantity: 1, price: itemPrice });
+                    console.log('Could not find menuItemElement for:', itemName);
                 }
-            } else {
-                console.log('Could not find menuItemElement for:', itemName);
             }
-        }
 
-        function updateOrderDisplay() {
-            console.log('updateOrderDisplay called. Current order:', order);
-            orderItemsList.innerHTML = ''; // Clear the current list
-            let total = 0;
-            order.forEach(item => {
-                console.log('Processing item:', item);
-                console.log('Item quantity:', item.quantity);
-                console.log('Item price:', item.price);
-                const itemTotal = item.quantity * item.price;
-                console.log('Item total:', itemTotal);
-                total += itemTotal;
-                console.log('Current total:', total);
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `
-                    <span class="math-inline">\{item\.name\}
+            function updateOrderDisplay() {
+                console.log('updateOrderDisplay called. Current order:', order);
+                orderItemsList.innerHTML = ''; // Clear the current list
+                let total = 0;
+                order.forEach(item => {
+                    console.log('Processing item:', item);
+                    console.log('Item quantity:', item.quantity);
+                    console.log('Item price:', item.price);
+                    const itemTotal = item.quantity * item.price;
+                    console.log('Item total:', itemTotal);
+                    total += itemTotal;
+                    console.log('Current total:', total);
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span class="math-inline">\{item\.name\}
 <<9\>div\>
 <button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
-                        <span><span class="math-inline">\{item\.quantity\}</span\>
+                            <span><span class="math-inline">\{item\.quantity\}</span\>
 <button onclick\="increaseQuantity\('</span>{item.name}')">+</button>
-                        <span style="margin-left: 10px;">₹${itemTotal.toFixed(2)}</span>
-                    </div>
-                `;
-                orderItemsList.appendChild(listItem);
-            });
-
-            // Display the total
-            const totalListItem = document.createElement('li');
+                            <span style="margin-left: 10px
