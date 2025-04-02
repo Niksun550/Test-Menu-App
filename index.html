@@ -314,12 +314,12 @@
 
         addToOrderButtons.forEach(button => {
             button.addEventListener('click', function() {
-                console.log('Add to Order button clicked');
+                console.log('Add to Order button clicked!');
                 const menuItem = this.parentNode;
                 const itemName = menuItem.dataset.itemName;
-                addItemToOrder(itemName); // Call the function to add/update item in order
+                addItemToOrder(itemName);
                 console.log('Order after addItemToOrder:', order);
-                updateOrderDisplay(); // Call the function to update the displayed order
+                updateOrderDisplay();
                 alert(`${itemName} added to order!`);
             });
         });
@@ -371,4 +371,5 @@
 
             // Display the total
             const totalListItem = document.createElement('li');
-            totalListItem.style.fontWeight
+            totalListItem.style.fontWeight = 'bold';
+            totalListItem.style.borderTop = '2px solid #c
