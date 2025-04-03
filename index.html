@@ -199,22 +199,6 @@
         #submit-order-button:hover {
             background-color: #45a049;
         }
-
-        /* Media query for screens 600px or less */
-        @media (max-width: 600px) {
-            .header {
-                padding: 15px;
-            }
-            .logo {
-                max-height: 50px;
-            }
-            .social-icon {
-                width: 25px;
-                height: 25px;
-                line-height: 25px;
-                font-size: 0.9em;
-            }
-        }
     </style>
 </head>
 <body lang="en-IN">
@@ -288,12 +272,13 @@
         // TODO: Replace with your actual Firebase project configuration
         const firebaseConfig = {
           apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
-          authDomain: "testmenu-4ed51.firebaseapp.com",
-          projectId: "testmenu-4ed51",
-          storageBucket: "testmenu-4ed51.firebasestorage.app",
-          messagingSenderId: "98263305480",
-          appId: "1:98263305480:web:024158941cb5f53225f0bd",
-          measurementId: "G-CX0JDH1RDP"
+  authDomain: "testmenu-4ed51.firebaseapp.com",
+  projectId: "testmenu-4ed51",
+  storageBucket: "testmenu-4ed51.firebasestorage.app",
+  messagingSenderId: "98263305480",
+  appId: "1:98263305480:web:024158941cb5f53225f0bd",
+  measurementId: "G-CX0JDH1RDP"
+
         };
 
         // Initialize Firebase
@@ -389,4 +374,16 @@
                     total: order.reduce((sum, item) => sum + item.quantity * item.price, 0)
                 };
 
-                console.log('Order Data:', order
+                console.log('Order Data:', orderData);
+
+                try {
+                    // **Important:** Replace 'orders' with the actual name of your Firestore collection
+                    const docRef = await addDoc(collection(db, 'orders'), orderData);
+                    console.log('Order submitted successfully! Document ID:', docRef.id);
+                    alert('Order submitted successfully!');
+                    // Optionally clear the order display
+                    order.length = 0;
+                    updateOrderDisplay();
+                    tableNumberInput.value = ''; // Clear the table number input
+                } catch (error) {
+                    console.error
