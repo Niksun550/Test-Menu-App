@@ -382,3 +382,9 @@
                 totalListItem.textContent = `Total: &#8377;${total.toFixed(2)}`;
                 orderItemsList.appendChild(totalListItem);
             }
+// Initial call to update display if there's anything in the order (e.g., after page refresh)
+            updateOrderDisplay();
+        });
+    </script>
+</body>
+</html>
