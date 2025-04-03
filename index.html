@@ -195,10 +195,13 @@
             const orderItemsElement = document.querySelector('.order-items');
             const orderTotalElement = document.querySelector('.order-total');
             const submitOrderButton = document.getElementById('submit-order');
-
+            
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+            
             // Initialize Firebase (Replace with your config)
-            const firebaseConfig = {
-                apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
+const firebaseConfig = {
+  apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
   authDomain: "testmenu-4ed51.firebaseapp.com",
   projectId: "testmenu-4ed51",
   storageBucket: "testmenu-4ed51.firebasestorage.app",
