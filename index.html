@@ -290,7 +290,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <script>
-        console.log('Script started');
+        console.log('Script started!'); // Added this line
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM is loaded');
             // Replace with your actual Firebase configuration
@@ -365,11 +366,10 @@
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
                         <span class="math-inline">\{item\.name\}
-<<9\>div\>
+<div\>
 <button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
-                            <span><span class="math-inline">\{item\.quantity\}</span\>
-<button onclick\="increaseQuantity\('</span>{item.name}')">+</button>
-                            <span
-  </script>
+                            <span>${item.quantity}</span>
+                            <button onclick="increase
+</script>
 </body>
 </html>
