@@ -309,7 +309,7 @@
         &copy; 2025 Your Hotel Name
     </div>
 
-  <script type="module">
+    <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "firebase/app";
         import { getFirestore, collection, addDoc } from "firebase/firestore";
@@ -323,6 +323,7 @@
   messagingSenderId: "98263305480",
   appId: "1:98263305480:web:024158941cb5f53225f0bd",
   measurementId: "G-CX0JDH1RDP"
+
         };
 
         // Initialize Firebase
@@ -366,11 +367,11 @@
                     console.log('Current total:', total);
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
-                        ${item.name}
-                        <div>
-                            <button onclick="decreaseQuantity('${item.name}')">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="increaseQuantity('${item.name}')">+</button>
+                        <span class="math-inline">\{item\.name\}
+<<12\>div\>
+<button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
+                            <span><span class="math-inline">\{item\.quantity\}</span\>
+<button onclick\="increaseQuantity\('</span>{item.name}')">+</button>
                             <span style="margin-left: 10px">&#8377;${itemTotal.toFixed(2)}</span>
                         </div>
                     `;
@@ -382,7 +383,7 @@
             }
 
             // Make these functions globally accessible
-            window.decreaseQuantity = function decreaseQuantity(itemName) {
+            window.decreaseQuantity = function {
                 const item = order.find(item => item.name === itemName);
                 if (item && item.quantity > 1) {
                     item.quantity--;
