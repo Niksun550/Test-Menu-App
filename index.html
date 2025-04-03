@@ -1,239 +1,392 @@
 <!DOCTYPE html>
 <html lang="en-IN">
 <head>
-    <title>Chef Orders</title>
+    <title>Our Delicious Menu</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            margin: 10px;
-            background-color: #f8f9fa;
-            color: #495057;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
             line-height: 1.6;
+        }
+        .header {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-height: 60px; /* Adjusted logo size for mobile */
+        }
+        .location {
+            margin-top: 10px;
+            font-size: 0.8em; /* Adjusted font size for mobile */
+            color: #777;
+        }
+        .social-media {
+            margin-top: 10px;
+        }
+        .social-icon {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            margin: 0 5px;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em; /* Adjusted font size for mobile */
+            color: white;
+        }
+        .social-icon.facebook {
+            background-color: #3b5998;
+        }
+        .social-icon.twitter {
+            background-color: #1da1f2;
+        }
+        .social-icon.linkedin {
+            background-color: #0077b5;
+        }
+        .social-icon.instagram {
+            background-color: #e4405f;
+        }
+        .container {
+            width: 95%; /* Wider on mobile */
+            margin: auto;
+            overflow: hidden;
+            padding: 15px; /* Less padding on mobile */
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         h1 {
             text-align: center;
-            margin-bottom: 20px;
-            color: #007bff;
+            color: #d35400;
+            margin-bottom: 20px; /* Less margin on mobile */
+            border-bottom: 2px solid #d35400;
+            padding-bottom: 8px; /* Less padding on mobile */
+            font-size: 1.8em; /* Adjusted font size for mobile */
         }
-        h2 {
-            margin-top: 15px;
-            color: #28a745;
-            border-bottom: 1px solid #ced4da;
-            padding-bottom: 5px;
-            font-size: 1.5em;
+        .menu-item {
+            display: flex;
+            flex-direction: column; /* Stack items on mobile */
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            align-items: flex-start; /* Align items to the start on mobile */
         }
-        table {
+        .item-click-area {
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow-x: auto; /* Enable horizontal scrolling for wide tables */
-        }
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 8px;
-            text-align: left;
-            font-size: 0.9em;
-            white-space: nowrap; /* Prevent text wrapping in columns */
-        }
-        th {
-            background-color: #e9ecef;
-            font-weight: bold;
-            color: #495057;
-        }
-        tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .order-item-list {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-        .order-item-list li {
-            padding: 6px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9em;
-        }
-        .order-item-list li:last-child {
-            border-bottom: none;
-        }
-        .status-container {
-            margin-top: 10px;
-            text-align: right;
-        }
-        .status-label {
-            margin-right: 5px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-        .status-select {
-            padding: 6px;
-            border-radius: 4px;
-            border: 1px solid #ced4da;
-            font-size: 0.9em;
-        }
-        .status-button {
-            padding: 6px 10px;
-            border-radius: 4px;
-            border: none;
-            background-color: #007bff;
-            color: white;
             cursor: pointer;
+        }
+        .item-image {
+            width: 100%; /* Full width on mobile */
+            height: auto;
+            margin-right: 0; /* Remove right margin on mobile */
+            margin-bottom: 10px; /* Add bottom margin on mobile */
+            border-radius: 5px;
+            object-fit: cover;
+        }
+        .item-details {
+            width: 100%; /* Full width on mobile */
+        }
+        .item-name {
+            font-weight: bold;
+            font-size: 1.1em; /* Adjusted font size for mobile */
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .item-price {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1em; /* Adjusted font size for mobile */
+        }
+        .item-description {
+            color: #777;
+            font-size: 0.9em; /* Adjusted font size for mobile */
+        }
+        .review-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px; /* Less margin on mobile */
+            padding: 10px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .order-summary {
+            width: 95%; /* Wider on mobile */
+            margin: 20px auto;
+            padding: 15px; /* Less padding on mobile */
+            background-color: #e0f2f7;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+        .order-summary h2 {
+            text-align: center;
+            color: #d35400;
+            margin-bottom: 10px; /* Less margin on mobile */
+            border-bottom: 1px solid #d35400;
+            padding-bottom: 5px; /* Less padding on mobile */
+            font-size: 1.6em; /* Adjusted font size for mobile */
+        }
+        .order-summary ul {
+            list-style: none;
+            padding: 0;
+        }
+        .order-summary li {
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #cce5ff;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column; /* Stack items in order summary on mobile */
+            justify-content: space-between;
+            align-items: flex-start; /* Align items to the start on mobile */
+        }
+        .order-summary li:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            padding-top: 10px; /* Less padding on mobile */
+            border-top: 2px solid #cce5ff;
+            margin-bottom: 0;
+        }
+        .order-summary li > div {
+            width: 100%; /* Full width for controls on mobile */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px; /* Add margin for spacing */
+        }
+        .order-summary li button {
+            padding: 8px 12px;
             font-size: 0.9em;
         }
-        .status-button:hover {
-            background-color: #0056b3;
+        .order-summary li span {
+            font-size: 0.9em;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 15px; /* Less margin on mobile */
+            padding-bottom: 15px; /* Less padding on mobile */
+            font-size: 0.7em; /* Adjusted font size for mobile */
+            color: #777;
+        }
+        #submit-order-button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px; /* Less margin on mobile */
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #submit-order-button:hover {
+            background-color: #45a049;
         }
 
         /* Media query for screens 600px or less */
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8em;
+            .header {
+                padding: 15px;
             }
-            h2 {
-                font-size: 1.3em;
+            .logo {
+                max-height: 50px;
             }
-            table {
-                border: none;
-                box-shadow: none;
-            }
-            th {
-                display: none; /* Hide headers on small screens */
-            }
-            td {
-                display: block;
-                border: none;
-                border-bottom: 1px solid #eee;
-                position: relative;
-                padding-left: 50%; /* Make space for label */
-            }
-            td:last-child {
-                border-bottom: none;
-            }
-            td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 6px;
-                font-weight: bold;
-                font-size: 0.8em;
-            }
-            .status-container {
-                text-align: left;
+            .social-icon {
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                font-size: 0.9em;
             }
         }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
-<body>
-    <h1>Chef Orders</h1>
-    <div id="orders-container">
+<body lang="en-IN">
+    <div class="header">
+        <img src="hotel-logo.png" alt="Hotel Logo" class="logo">
+        <p class="location">Opposite To Railway Station, MG Road, Bangalore, India</p>
+        <div class="social-media">
+            <a href="#" class="social-icon facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-icon instagram" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
+    </div>
+    <div class="container">
+        <h1>Our Delicious Menu</h1>
+        <div class="menu-item" id="item-1" data-item-name="Pizza Margherita" data-item-price="10.00">
+            <div class="item-click-area">
+                <img src="pizza.jpg" alt="Pizza Margherita" class="item-image">
+                <div class="item-details">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span class="item-name">Pizza Margherita</span>
+                        <span class="item-price">&#8377;10.00</span>
+                    </div>
+                    <p class="item-description">Classic pizza with tomato, mozzarella, and basil.</p>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item" id="item-2" data-item-name="Pasta Carbonara" data-item-price="12.50">
+            <div class="item-click-area">
+                <img src="pasta.jpg" alt="Pasta Carbonara" class="item-image">
+                <div class="item-details">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span class="item-name">Pasta Carbonara</span>
+                        <span class="item-price">&#8377;12.50</span>
+                    </div>
+                    <p class="item-description">Spaghetti with eggs, cheese, pancetta, and black pepper.</p>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item" id="item-3" data-item-name="Chocolate Cake" data-item-price="6.75">
+            <div class="item-click-area">
+                <img src="cake.jpg" alt="Chocolate Cake" class="item-image">
+                <div class="item-details">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span class="item-name">Chocolate Cake</span>
+                        <span class="item-price">&#8377;6.75</span>
+                    </div>
+                    <p class="item-description">Rich chocolate cake with chocolate frosting.</p>
+                </div>
+            </div>
+        </div>
+        <a href="YOUR_GOOGLE_REVIEW_LINK_HERE" target="_blank" class="review-link">Leave us a Google Review!</a>
+    </div>
+    <div class="order-summary">
+        <h2>Your Order</h2>
+        <label for="table-number">Table Number:</label>
+        <input type="number" id="table-number" name="table-number" min="1" required>
+        <ul id="order-items">
+        </ul>
+        <button id="submit-order-button">Place Order</button>
+    </div>
+    <div class="footer">
+        &copy; 2025 Your Hotel Name
+    </div>
 
-    <script>
-        // Replace with your actual Firebase configuration
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "firebase/app";
+        import { getFirestore, collection, addDoc } from "firebase/firestore";
+
+        // TODO: Replace with your actual Firebase project configuration
         const firebaseConfig = {
-          apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
-          authDomain: "testmenu-4ed51.firebaseapp.com",
-          projectId: "testmenu-4ed51",
-          storageBucket: "testmenu-4ed51.firebasestorage.app",
-          messagingSenderId: "98263305480",
-          appId: "1:98263305480:web:024158941cb5f53225f0bd",
-          measurementId: "G-CX0JDH1RDP"
+          apiKey: "YOUR_ACTUAL_API_KEY",
+          authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_PROJECT_ID.appspot.com",
+          messagingSenderId: "YOUR_SENDER_ID",
+          appId: "YOUR_APP_ID",
+          measurementId: "YOUR_MEASUREMENT_ID"
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig);
 
         // Initialize Firestore
-        const db = firebase.firestore();
+        const db = getFirestore(app);
 
-        const ordersContainer = document.getElementById('orders-container');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM is loaded');
+            // alert('DOM is loaded!'); // Keep this for debugging
 
-        // Function to display orders
-        function displayOrders(ordersByTable) {
-            ordersContainer.innerHTML = ''; // Clear existing content
-            for (const tableNumber in ordersByTable) {
-                const tableOrders = ordersByTable[tableNumber];
-                const tableDiv = document.createElement('div');
-                tableDiv.innerHTML = `<h2>Table ${tableNumber}</h2>`;
-                const table = document.createElement('table');
-                const thead = document.createElement('thead');
-                thead.innerHTML = '<tr><th>Item</th><th>Quantity</th><th>Price</th><th>Status</th><th>Actions</th></tr>';
-                table.appendChild(thead);
-                const tbody = document.createElement('tbody');
-                tableOrders.forEach(orderData => {
-                    const orderId = orderData.id; // Get the document ID
-                    orderData.order.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td data-label="Item">${item.name}</td>
-                            <td data-label="Quantity">${item.quantity}</td>
-                            <td data-label="Price">₹${item.price.toFixed(2)}</td>
-                            <td data-label="Status">
-                                <span id="status-${orderId}">${orderData.status}</span>
-                            </td>
-                            <td data-label="Actions">
-                                <select id="status-select-${orderId}" class="status-select">
-                                    <option value="pending" ${orderData.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="preparing" ${orderData.status === 'preparing' ? 'selected' : ''}>Preparing</option>
-                                    <option value="ready" ${orderData.status === 'ready' ? 'selected' : ''}>Ready</option>
-                                    <option value="served" ${orderData.status === 'served' ? 'selected' : ''}>Served</option>
-                                </select>
-                                <button class="status-button" onclick="updateOrderStatus('${orderId}')">Update</button>
-                            </td>
-                        `;
-                        tbody.appendChild(row);
+            const menuItems = document.querySelectorAll('.menu-item');
+            console.log('Number of menu items found:', menuItems.length);
+
+            const order = []; // Array to store ordered items with quantities and prices
+            const orderItemsList = document.getElementById('order-items'); // Get the <ul> element
+            const submitOrderButton = document.getElementById('submit-order-button');
+
+            menuItems.forEach(menuItem => {
+                const clickArea = menuItem.querySelector('.item-click-area');
+                if (clickArea) {
+                    clickArea.addEventListener('click', function() {
+                        console.log('Menu item clicked! (ID:', menuItem.id, ')');
+                        const itemName = menuItem.dataset.itemName;
+                        const itemPrice = parseFloat(menuItem.dataset.itemPrice);
+                        addItemToOrder(itemName, itemPrice);
+                        console.log('Order after addItemToOrder:', order);
+                        updateOrderDisplay();
+                        alert(`${itemName} added to order!`);
                     });
-                });
-                table.appendChild(tbody);
-                tableDiv.appendChild(table);
-                ordersContainer.appendChild(tableDiv);
-            }
-        }
-
-        // Fetch orders from Firestore and listen for real-time updates
-        db.collection("orders").orderBy("timestamp", "desc")
-            .onSnapshot((querySnapshot) => {
-                const ordersByTable = {};
-                querySnapshot.forEach((doc) => {
-                    const orderData = doc.data();
-                    const tableNumber = orderData.tableNumber;
-                    const orderId = doc.id; // Get the document ID
-                    orderData.id = orderId; // Add the ID to the orderData object
-                    if (ordersByTable[tableNumber]) {
-                        ordersByTable[tableNumber].push(orderData);
-                    } else {
-                        ordersByTable[tableNumber] = [orderData];
-                    }
-                });
-                displayOrders(ordersByTable);
-            });
-
-        function updateOrderStatus(orderId) {
-            const statusSelect = document.getElementById(`status-select-${orderId}`);
-            const newStatus = statusSelect.value;
-
-            db.collection("orders").doc(orderId).update({
-                status: newStatus
-            })
-            .then(() => {
-                console.log(`Order ${orderId} status updated to ${newStatus}`);
-                // Optionally update the displayed status without a full refresh
-                const statusSpan = document.getElementById(`status-${orderId}`);
-                if (statusSpan) {
-                    statusSpan.textContent = newStatus;
                 }
-            })
-            .catch((error) => {
-                console.error("Error updating order status: ", error);
-                alert("Error updating order status. Please try again.");
             });
-        }
-    </script>
-</body>
-</html>
+
+            submitOrderButton.addEventListener('click', submitOrder);
+
+            function addItemToOrder(itemName, itemPrice) {
+                console.log('addItemToOrder called for:', itemName, itemPrice);
+                const existingItem = order.find(item => item.name === itemName);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    order.push({ name: itemName, quantity: 1, price: itemPrice });
+                }
+            }
+
+            function updateOrderDisplay() {
+                console.log('updateOrderDisplay called. Current order:', order);
+                orderItemsList.innerHTML = ''; // Clear the current list
+                let total = 0;
+                order.forEach(item => {
+                    console.log('Processing item:', item);
+                    console.log('Item quantity:', item.quantity);
+                    console.log('Item price:', item.price);
+                    const itemTotal = item.quantity * item.price;
+                    console.log('Item total:', itemTotal);
+                    total += itemTotal;
+                    console.log('Current total:', total);
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span class="math-inline">\{item\.name\}
+<<11\>div\>
+<button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
+                            <span><span class="math-inline">\{item\.quantity\}</span\>
+<button onclick\="increaseQuantity\('</span>{item.name}')">+</button>
+                            <span style="margin-left: 10px">&#8377;${itemTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                    orderItemsList.appendChild(listItem);
+                });
+                const totalListItem = document.createElement('li');
+                totalListItem.textContent = `Total: &#8377;${total.toFixed(2)}`;
+                orderItemsList.appendChild(totalListItem);
+            }
+
+            async function submitOrder() {
+                const tableNumberInput = document.getElementById('table-number');
+                const tableNumber = tableNumberInput.value;
+
+                if (!tableNumber) {
+                    alert('Please enter your table number.');
+                    return;
+                }
+
+                if (order.length === 0) {
+                    alert('Your order is empty. Please add items to your order.');
+                    return;
+                }
+
+                const orderData = {
+                    tableNumber: tableNumber,
+                    items: order,
+                    total: order.reduce((sum, item) => sum + item.quantity * item.price, 0)
+                };
+
+                console.log('Order Data:', order
