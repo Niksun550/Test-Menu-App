@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -52,7 +53,8 @@
             flex: 1;
         }
 
-        .menu-item h3 { /* Changed from h2 to h3 */
+        .menu-item h3 {
+            /* Changed from h2 to h3 */
             margin-top: 0;
             margin-bottom: 5px;
             font-size: 1.2em;
@@ -61,10 +63,13 @@
         .menu-item .price {
             font-weight: bold;
             color: green;
+            margin-left: 5px;
+            /* Add spacing before price */
         }
 
         .add-to-order {
-            background-color: #007bff; /* Bootstrap blue */
+            background-color: #007bff;
+            /* Bootstrap blue */
             color: white;
             border: none;
             padding: 8px 12px;
@@ -73,7 +78,8 @@
         }
 
         .add-to-order:hover {
-            background-color: #0056b3; /* Darker blue on hover */
+            background-color: #0056b3;
+            /* Darker blue on hover */
         }
 
         /* Order Display Styles */
@@ -112,6 +118,8 @@
             text-align: right;
             font-weight: bold;
             font-size: 1.1em;
+            margin-left: 5px;
+            /* Add spacing before total */
         }
 
         /* Table Number and Submit Button */
@@ -122,7 +130,8 @@
         }
 
         #submit-order {
-            background-color: #28a745; /* Bootstrap green */
+            background-color: #28a745;
+            /* Bootstrap green */
             color: white;
             border: none;
             padding: 10px 15px;
@@ -133,10 +142,12 @@
         }
 
         #submit-order:hover {
-            background-color: #1e7e34; /* Darker green on hover */
+            background-color: #1e7e34;
+            /* Darker green on hover */
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Restaurant Menu</h1>
@@ -147,9 +158,10 @@
                 <div class="menu-item-details">
                     <h3>Pizza</h3>
                     <p>Delicious pizza with tomato sauce, cheese, and your choice of toppings.</p>
-                    <p class="price">$10.99</p>
+                    <p class="price">₹ 10.99</p>
                 </div>
-                <button class="add-to-order" data-name="Pizza" data-price="10.99" data-image="pizza.jpg">Add to Order</button>
+                <button class="add-to-order" data-name="Pizza" data-price="10.99" data-image="pizza.jpg">Add to
+                    Order</button>
             </div>
 
             <div class="menu-item">
@@ -157,9 +169,10 @@
                 <div class="menu-item-details">
                     <h3>Burger</h3>
                     <p>Classic burger with lettuce, tomato, and onion.</p>
-                    <p class="price">$8.99</p>
+                    <p class="price">₹ 8.99</p>
                 </div>
-                <button class="add-to-order" data-name="Burger" data-price="8.99" data-image="burger.jpg">Add to Order</button>
+                <button class="add-to-order" data-name="Burger" data-price="8.99" data-image="burger.jpg">Add to
+                    Order</button>
             </div>
             </div>
 
@@ -167,7 +180,7 @@
         <div class="order-items">
             </div>
         <div class="order-total">
-            Total: $0.00
+            Total: ₹ 0.00
         </div>
 
         <label for="table-number">Table Number:</label>
@@ -177,11 +190,27 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const addToOrderButtons = document.querySelectorAll('.add-to-order');
             const orderItemsElement = document.querySelector('.order-items');
             const orderTotalElement = document.querySelector('.order-total');
             const submitOrderButton = document.getElementById('submit-order');
+
+            // Initialize Firebase (Replace with your config)
+            const firebaseConfig = {
+                apiKey: "YOUR_API_KEY",
+                authDomain: "YOUR_AUTH_DOMAIN",
+                projectId: "YOUR_PROJECT_ID",
+                storageBucket: "YOUR_STORAGE_BUCKET",
+                messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+                appId: "YOUR_APP_ID",
+                measurementId: "YOUR_MEASUREMENT_ID"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
 
             let order = [];
 
@@ -191,7 +220,12 @@
                 if (existingItem) {
                     existingItem.quantity++;
                 } else {
-                    order.push({ name: name, price: price, quantity: 1, image: image });
+                    order.push({
+                        name: name,
+                        price: price,
+                        quantity: 1,
+                        image: image
+                    });
                 }
                 updateOrderDisplay();
             }
@@ -212,13 +246,13 @@
                             <span class="item-quantity">${item.quantity}</span>
                             <button class="quantity-btn increase-quantity" data-name="${item.name}">+</button>
                         </div>
-                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
-                    `;
+                        <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
+                    `; // Display Rupees
                     orderItemsElement.appendChild(orderItemDiv);
                     total += item.price * item.quantity;
                 });
 
-                orderTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+                orderTotalElement.textContent = `Total: ₹ ${total.toFixed(2)}`; // Display Rupees
 
                 // Add event listeners to quantity buttons after they are created
                 const decreaseButtons = document.querySelectorAll('.decrease-quantity');
@@ -255,7 +289,7 @@
 
             // Event listener for "Add to Order" buttons
             addToOrderButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const name = this.dataset.name;
                     const price = parseFloat(this.dataset.price);
                     const image = this.dataset.image;
@@ -264,7 +298,7 @@
             });
 
             // Event listener for "Submit Order" button
-            submitOrderButton.addEventListener('click', function() {
+            submitOrderButton.addEventListener('click', function () {
                 const tableNumber = document.getElementById('table-number').value;
                 if (tableNumber && order.length > 0) {
                     const orderDetails = {
@@ -274,19 +308,18 @@
                     };
 
                     // Add the order to the 'orders' collection in Firestore
-                    db.collection('orders')
-                      .add(orderDetails)
-                      .then((docRef) => {
-                        console.log("Order submitted to Firestore with ID: ", docRef.id);
-                        alert("Order submitted successfully!");
-                        // Reset the order after successful submission
-                        order = [];
-                        updateOrderDisplay();
-                      })
-                      .catch((error) => {
-                        console.error("Error adding order to Firestore: ", error);
-                        alert("Error submitting order. Please try again.");
-                      });
+                    db.collection('orders').add(orderDetails)
+                        .then((docRef) => {
+                            console.log("Order submitted to Firestore with ID: ", docRef.id);
+                            alert("Order submitted successfully!");
+                            // Reset the order after successful submission
+                            order = [];
+                            updateOrderDisplay();
+                        })
+                        .catch((error) => {
+                            console.error("Error adding order to Firestore: ", error);
+                            alert("Error submitting order. Please try again.");
+                        });
                 } else {
                     alert("Please enter a table number and add items to your order.");
                 }
@@ -294,4 +327,5 @@
         });
     </script>
 </body>
+
 </html>
