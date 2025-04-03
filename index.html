@@ -289,11 +289,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-    <script>
+  <script>
         console.log('Script started!'); // Added this line
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM is loaded');
+            alert('DOM is loaded!'); // Add the alert here
             // Replace with your actual Firebase configuration
             const firebaseConfig = {
               apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
@@ -350,31 +351,95 @@
                     console.log('Could not find menuItemElement for:', itemName);
                 }
             }
-function updateOrderDisplay() {
-                console.log('updateOrderDisplay called. Current order:', order);
-                orderItemsList.innerHTML = ''; // Clear the current list
-                let total = 0;
-                order.forEach(item => {
-                    console.log('Processing item:', item);
-                    console.log('Item quantity:', item.quantity);
-                    console.log('Item price:', item.price);
-                    const itemTotal = item.quantity * item.price;
-                    console.log('Item total:', itemTotal);
-                    total += itemTotal;
-                    console.log('Current total:', total);
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        ${item.name}
-                        <div>
-                            <button onclick="decreaseQuantity('${item.name}')">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="increaseQuantity('${item.name}')">+</button>
-                            <span style="margin-left: 10px">${itemTotal.toFixed(2)}</span>
-                        </div>
-                    `;
-                    orderItemsList.appendChild(listItem);
-                });
-                const totalListItem = document.createElement('li');
-                totalListItem.textContent = `Total: ₹${total.toFixed(2)}`;
-                orderItemsList.appendChild(totalListItem);
-            }
+
+            function updateOrderDisplay() {
+                console.log('updateOrderDisplay called. Current order:', order);
+                orderItemsList.innerHTML = ''; // Clear the current list
+                let total = 0;
+                order.forEach(item => {
+                    console.log('Processing item:', item);
+                    console.log('Item quantity:', item.quantity);
+                    console.log('Item price:', item.price);
+                    const itemTotal = item.quantity * item.price;
+                    console.log('Item total:', itemTotal);
+                    total += itemTotal;
+                    console.log('Current total:', total);
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        ${item.name}
+                        <div>
+                            <button onclick="decreaseQuantity('${item.name}')">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="increaseQuantity('${item.name}')">+</button>
+                            <span style="margin-left: 10px">${itemTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                    orderItemsList.appendChild(listItem);
+                });
+                const totalListItem = document.createElement('li');
+                totalListItem.textContent = `Total: ₹${total.toFixed(2)}`;
+                orderItemsList.appendChild(totalListItem);
+            }
+
+            function submitOrder() {
+                const tableNumberInput = document.getElementById('table-number');
+                const tableNumber = tableNumberInput.value;
+
+                if (!tableNumber) {
+                    alert('Please enter your table number.');
+                    return;
+                }
+
+                if (order.length === 0) {
+                    alert('Your order is empty. Please add items to your order.');
+                    return;
+                }
+
+                const orderData = {
+                    tableNumber: tableNumber,
+                    items: order,
+                    total: order.reduce((sum, item) => sum + item.quantity * item.price, 0)
+                };
+
+                console.log('Order Data:', orderData);
+
+                // **Important:** Replace 'orders' with the actual name of your Firestore collection
+                db.collection('orders').add(orderData)
+                    .then((docRef) => {
+                        console.log('Order submitted successfully! Document ID:', docRef.id);
+                        alert('Order submitted successfully!');
+                        // Optionally clear the order display
+                        order.length = 0;
+                        updateOrderDisplay();
+                        tableNumberInput.value = ''; // Clear the table number input
+                    })
+                    .catch((error) => {
+                        console.error('Error submitting order:', error);
+                        alert('Error submitting order. Please try again.');
+                    });
+            }
+
+            function increaseQuantity(itemName) {
+                const itemToIncrease = order.find(item => item.name === itemName);
+                if (itemToIncrease) {
+                    itemToIncrease.quantity++;
+                    updateOrderDisplay();
+                }
+            }
+
+            function decreaseQuantity(itemName) {
+                const itemToDecrease = order.find(item => item.name === itemName);
+                if (itemToDecrease) {
+                    itemToDecrease.quantity--;
+                    if (itemToDecrease.quantity < 1) {
+                        // Remove the item if quantity becomes zero
+                        const index = order.indexOf(itemToDecrease);
+                        order.splice(index, 1);
+                    }
+                    updateOrderDisplay();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
