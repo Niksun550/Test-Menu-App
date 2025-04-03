@@ -350,23 +350,31 @@
                     console.log('Could not find menuItemElement for:', itemName);
                 }
             }
-
-            function updateOrderDisplay() {
-                console.log('updateOrderDisplay called. Current order:', order);
-                orderItemsList.innerHTML = ''; // Clear the current list
-                let total = 0;
-                order.forEach(item => {
-                    console.log('Processing item:', item);
-                    console.log('Item quantity:', item.quantity);
-                    console.log('Item price:', item.price);
-                    const itemTotal = item.quantity * item.price;
-                    console.log('Item total:', itemTotal);
-                    total += itemTotal;
-                    console.log('Current total:', total);
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <span class="math-inline">\{item\.name\}
-<div\>
-<button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="increase
+function updateOrderDisplay() {
+                console.log('updateOrderDisplay called. Current order:', order);
+                orderItemsList.innerHTML = ''; // Clear the current list
+                let total = 0;
+                order.forEach(item => {
+                    console.log('Processing item:', item);
+                    console.log('Item quantity:', item.quantity);
+                    console.log('Item price:', item.price);
+                    const itemTotal = item.quantity * item.price;
+                    console.log('Item total:', itemTotal);
+                    total += itemTotal;
+                    console.log('Current total:', total);
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        ${item.name}
+                        <div>
+                            <button onclick="decreaseQuantity('${item.name}')">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="increaseQuantity('${item.name}')">+</button>
+                            <span style="margin-left: 10px">${itemTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                    orderItemsList.appendChild(listItem);
+                });
+                const totalListItem = document.createElement('li');
+                totalListItem.textContent = `Total: ₹${total.toFixed(2)}`;
+                orderItemsList.appendChild(totalListItem);
+            }
