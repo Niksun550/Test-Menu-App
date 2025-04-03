@@ -1,21 +1,181 @@
-<div class="container">
-       <h1>Restaurant Menu</h1>
-       <div class="menu-item">
-           <h2>Pizza</h2>
-           <p>Delicious pizza with tomato sauce, cheese, and your choice of toppings.</p>
-           <p class="price">$10.99</p>
-           <button class="add-to-order">Add to Order</button>
-       </div>
-       <div class="menu-item">
-           <h2>Burger</h2>
-           <p>Classic burger with lettuce, tomato, and onion.</p>
-           <p class="price">$8.99</p>
-           <button class="add-to-order">Add to Order</button>
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Restaurant Menu</title>
+       <style>
+           /* Basic reset to remove default margins and padding */
+           * {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+           }
+   
+           body {
+               font-family: sans-serif;
+               line-height: 1.6;
+               background-color: #f4f4f4;
+               margin: 20px;
+           }
+   
+           .container {
+               max-width: 800px;
+               margin: 0 auto;
+               background-color: #fff;
+               padding: 20px;
+               border-radius: 8px;
+               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+           }
+   
+           h1 {
+               text-align: center;
+               margin-bottom: 20px;
+               color: #333;
+           }
+   
+           .menu-item {
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               padding: 10px;
+               border-bottom: 1px solid #eee;
+           }
+   
+           .menu-item:last-child {
+               border-bottom: none;
+           }
+   
+           .menu-item h2 {
+               color: #555;
+               font-size: 1.2em;
+               margin-bottom: 5px;
+           }
+   
+           .menu-item p {
+               color: #777;
+           }
+   
+           .price {
+               font-weight: bold;
+               color: #008000; /* Green color for price */
+           }
+   
+           .add-to-order {
+               background-color: #008CBA; /* Blue color for button */
+               color: white;
+               border: none;
+               padding: 10px 20px;
+               text-align: center;
+               text-decoration: none;
+               display: inline-block;
+               font-size: 1em;
+               margin: 4px 2px;
+               cursor: pointer;
+               border-radius: 5px;
+           }
+   
+           .add-to-order:hover {
+               background-color: #005F6B; /* Darker blue on hover */
+           }
+   
+           .cart-items {
+               margin-top: 20px;
+               padding: 10px;
+               border: 1px solid #ddd;
+               border-radius: 5px;
+           }
+   
+           .cart-item {
+               display: flex;
+               justify-content: space-between;
+               padding: 5px 0;
+               border-bottom: 1px solid #eee;
+           }
+   
+           .cart-item:last-child {
+               border-bottom: none;
+           }
+   
+           .cart-total {
+               margin-top: 10px;
+               text-align: right;
+               font-weight: bold;
+               font-size: 1.1em;
+           }
+       </style>
+   </head>
+   <body>
+       <div class="container">
+           <h1>Restaurant Menu</h1>
+           <div class="menu-item">
+               <h2>Pizza</h2>
+               <p>Delicious pizza with tomato sauce, cheese, and your choice of toppings.</p>
+               <p class="price">$10.99</p>
+               <button class="add-to-order">Add to Order</button>
+           </div>
+           <div class="menu-item">
+               <h2>Burger</h2>
+               <p>Classic burger with lettuce, tomato, and onion.</p>
+               <p class="price">$8.99</p>
+               <button class="add-to-order">Add to Order</button>
+           </div>
+   
+           <h2>Your Order</h2>
+           <div class="cart-items">
+                       </div>
+           <div class="cart-total">
+                       </div>
        </div>
    
-       <h2>Your Order</h2>
-       <div class="cart-items">
-               </div>
-       <div class="cart-total">
-               </div>
-   </div>
+       <script>
+           document.addEventListener('DOMContentLoaded', function() {
+               const addToOrderButtons = document.querySelectorAll('.add-to-order');
+               const cartItemsElement = document.querySelector('.cart-items');
+               const cartTotalElement = document.querySelector('.cart-total');
+               let cart = [];
+   
+               addToOrderButtons.forEach(button => {
+                   button.addEventListener('click', handleAddToOrder);
+               });
+   
+               function handleAddToOrder(event) {
+                   const menuItem = event.target.parentElement;
+                   const itemName = menuItem.querySelector('h2').textContent;
+                   const itemPrice = parseFloat(menuItem.querySelector('.price').textContent.slice(1));
+   
+                   addToCart(itemName, itemPrice);
+                   updateCartDisplay();
+               }
+   
+               function addToCart(name, price) {
+                   const existingCartItem = cart.find(item => item.name === name);
+   
+                   if (existingCartItem) {
+                       existingCartItem.quantity++;
+                   } else {
+                       cart.push({ name: name, price: price, quantity: 1 });
+                   }
+               }
+   
+               function updateCartDisplay() {
+                   cartItemsElement.innerHTML = '';
+                   let total = 0;
+   
+                   cart.forEach(item => {
+                       const cartItemDiv = document.createElement('div');
+                       cartItemDiv.classList.add('cart-item');
+                       cartItemDiv.innerHTML = `
+                           <span>${item.name} x ${item.quantity}</span>
+                           <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                       `;
+                       cartItemsElement.appendChild(cartItemDiv);
+                       total += item.price * item.quantity;
+                   });
+   
+                   cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+               }
+           });
+       </script>
+   </body>
+   </html>
