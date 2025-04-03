@@ -105,9 +105,26 @@
            }
    
            .menu-item img {
-               max-width: 100px; /* Adjust size as needed */
+               max-width: 100px;
                height: auto;
                margin-right: 10px;
+           }
+   
+           .quantity-controls {
+               display: flex;
+               align-items: center;
+           }
+   
+           .quantity-controls button {
+               padding: 5px 10px;
+               margin: 0 5px;
+               border: 1px solid #ccc;
+               cursor: pointer;
+           }
+   
+           .item-quantity {
+               margin: 0 5px;
+               font-weight: bold;
            }
        </style>
    </head>
@@ -115,13 +132,15 @@
        <div class="container">
            <h1>Restaurant Menu</h1>
            <div class="menu-item">
-               <img src="pizza.jpg" alt="Pizza">              <h2>Pizza</h2>
+               <img src="pizza.jpg" alt="Pizza">
+               <h2>Pizza</h2>
                <p>Delicious pizza with tomato sauce, cheese, and your choice of toppings.</p>
                <p class="price">$10.99</p>
                <button class="add-to-order">Add to Order</button>
            </div>
            <div class="menu-item">
-               <img src="burger.jpg" alt="Burger">              <h2>Burger</h2>
+               <img src="burger.jpg" alt="Burger">
+               <h2>Burger</h2>
                <p>Classic burger with lettuce, tomato, and onion.</p>
                <p class="price">$8.99</p>
                <button class="add-to-order">Add to Order</button>
@@ -132,13 +151,19 @@
                        </div>
            <div class="cart-total">
                        </div>
-       </div>
+   
+           <div class="table-number-input">              <label for="table-number">Table Number:</label>
+               <input type="number" id="table-number" name="table-number" min="1" required>
+           </div>
+   
+           <button class="submit-order">Submit Order</button>      </div>
    
        <script>
            document.addEventListener('DOMContentLoaded', function() {
                const addToOrderButtons = document.querySelectorAll('.add-to-order');
                const cartItemsElement = document.querySelector('.cart-items');
                const cartTotalElement = document.querySelector('.cart-total');
+               const submitOrderButton = document.querySelector('.submit-order'); // Select the submit button
                let cart = [];
    
                addToOrderButtons.forEach(button => {
@@ -149,7 +174,7 @@
                    const menuItem = event.target.parentElement;
                    const itemName = menuItem.querySelector('h2').textContent;
                    const itemPrice = parseFloat(menuItem.querySelector('.price').textContent.slice(1));
-                   const itemImage = menuItem.querySelector('img').src;  // Get image source
+                   const itemImage = menuItem.querySelector('img').src;
    
                    addToCart(itemName, itemPrice, itemImage);
                    updateCartDisplay();
@@ -161,7 +186,7 @@
                    if (existingCartItem) {
                        existingCartItem.quantity++;
                    } else {
-                       cart.push({ name: name, price: price, quantity: 1, image: image });  // Store image
+                       cart.push({ name: name, price: price, quantity: 1, image: image });
                    }
                }
    
@@ -174,7 +199,12 @@
                        cartItemDiv.classList.add('cart-item');
                        cartItemDiv.innerHTML = `
                            <img src="${item.image}" alt="${item.name}" style="max-width: 50px; height: auto; margin-right: 10px;">
-                           <span>${item.name} x ${item.quantity}</span>
+                           <span>${item.name}</span>
+                           <div class="quantity-controls">
+                               <button class="decrease-quantity" data-name="${item.name}">-</button>
+                               <span class="item-quantity">${item.quantity}</span>
+                               <button class="increase-quantity" data-name="${item.name}">+</button>
+                           </div>
                            <span>$${(item.price * item.quantity).toFixed(2)}</span>
                        `;
                        cartItemsElement.appendChild(cartItemDiv);
@@ -182,7 +212,85 @@
                    });
    
                    cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+   
+                   // Add event listeners to the new quantity controls
+                   const decreaseButtons = document.querySelectorAll('.decrease-quantity');
+                   const increaseButtons = document.querySelectorAll('.increase-quantity');
+   
+                   decreaseButtons.forEach(button => {
+                       button.addEventListener('click', decreaseQuantity);
+                   });
+   
+                   increaseButtons.forEach(button => {
+                       button.addEventListener('click', increaseQuantity);
+                   });
                }
+   
+               function decreaseQuantity(event) {
+                   const itemName = event.target.dataset.name;
+                   const cartItem = cart.find(item => item.name === itemName);
+   
+                   if (cartItem && cartItem.quantity > 1) {
+                       cartItem.quantity--;
+                       updateCartDisplay();
+                   } else if (cartItem && cartItem.quantity === 1) {
+                       // Optionally remove the item from the cart if quantity becomes 0
+                       const itemIndex = cart.findIndex(item => item.name === itemName);
+                       if (itemIndex > -1) {
+                           cart.splice(itemIndex, 1);
+                           updateCartDisplay();
+                       }
+                   }
+               }
+   
+               function increaseQuantity(event) {
+                   const itemName = event.target.dataset.name;
+                   const cartItem = cart.find(item => item.name === itemName);
+   
+                   if (cartItem) {
+                       cartItem.quantity++;
+                       updateCartDisplay();
+                   }
+               }
+   
+               // Submit Order Logic
+               submitOrderButton.addEventListener('click', function() {
+                   const tableNumber = document.getElementById('table-number').value;
+   
+                   if (tableNumber) {
+                       const orderData = {
+                           tableNumber: tableNumber,
+                           items: cart,
+                           total: parseFloat(cartTotalElement.textContent.slice(7)) // Extract total value
+                       };
+   
+                       console.log('Order Data:', orderData);  // Log the order data (for now)
+   
+                       // In a real application, you would send this orderData to your backend
+                       // using a fetch() or XMLHttpRequest call.
+                       // For example:
+                       /*
+                       fetch('/api/orders', {
+                           method: 'POST',
+                           headers: {
+                               'Content-Type': 'application/json'
+                           },
+                           body: JSON.stringify(orderData)
+                       })
+                       .then(response => response.json())
+                       .then(data => {
+                           console.log('Success:', data);
+                           // Handle success (e.g., show confirmation message)
+                       })
+                       .catch((error) => {
+                           console.error('Error:', error);
+                           // Handle error (e.g., show error message)
+                       });
+                       */
+                   } else {
+                       alert('Please enter a table number.');
+                   }
+               });
            });
        </script>
    </body>
