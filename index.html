@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -212,8 +211,12 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+        
+           import db from './firebase-config.js';
+           import { collection, addDoc, getFirestore } from "firebase/firestore";
+           import { serverTimestamp } from "firebase/firestore"; // Import serverTimestamp
 
-        document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function () {
             const addToOrderButtons = document.querySelectorAll('.add-to-order');
             const orderItemsElement = document.querySelector('.order-items');
             const orderTotalElement = document.querySelector('.order-total');
