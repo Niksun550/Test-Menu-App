@@ -81,12 +81,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             align-items: flex-start; /* Align items to the start on mobile */
         }
-        .item-click-area {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            cursor: pointer;
-        }
         .item-image {
             width: 100%; /* Full width on mobile */
             height: auto;
@@ -112,6 +106,22 @@
         .item-description {
             color: #777;
             font-size: 0.9em; /* Adjusted font size for mobile */
+        }
+        .add-button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .add-button:hover {
+            background-color: #45a049;
         }
         .review-link {
             display: block;
@@ -214,6 +224,28 @@
                 line-height: 25px;
                 font-size: 0.9em;
             }
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .item-image {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .item-details {
+                width: 100%;
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+                padding-bottom: 6px;
+            }
+            .order-summary h2 {
+                font-size: 1.6em;
+                margin-bottom: 8px;
+                padding-bottom: 4px;
+            }
         }
     </style>
 </head>
@@ -231,39 +263,36 @@
     <div class="container">
         <h1>Our Delicious Menu</h1>
         <div class="menu-item" id="item-1" data-item-name="Pizza Margherita" data-item-price="10.00">
-            <div class="item-click-area">
-                <img src="pizza.jpg" alt="Pizza Margherita" class="item-image">
-                <div class="item-details">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span class="item-name">Pizza Margherita</span>
-                        <span class="item-price">&#8377;10.00</span>
-                    </div>
-                    <p class="item-description">Classic pizza with tomato, mozzarella, and basil.</p>
+            <img src="pizza.jpg" alt="Pizza Margherita" class="item-image">
+            <div class="item-details">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="item-name">Pizza Margherita</span>
+                    <span class="item-price">&#8377;10.00</span>
                 </div>
+                <p class="item-description">Classic pizza with tomato, mozzarella, and basil.</p>
+                <button class="add-button" onclick="addItemToOrder('Pizza Margherita', 10.00)">Add to Order</button>
             </div>
         </div>
         <div class="menu-item" id="item-2" data-item-name="Pasta Carbonara" data-item-price="12.50">
-            <div class="item-click-area">
-                <img src="pasta.jpg" alt="Pasta Carbonara" class="item-image">
-                <div class="item-details">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span class="item-name">Pasta Carbonara</span>
-                        <span class="item-price">&#8377;12.50</span>
-                    </div>
-                    <p class="item-description">Spaghetti with eggs, cheese, pancetta, and black pepper.</p>
+            <img src="pasta.jpg" alt="Pasta Carbonara" class="item-image">
+            <div class="item-details">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="item-name">Pasta Carbonara</span>
+                    <span class="item-price">&#8377;12.50</span>
                 </div>
+                <p class="item-description">Spaghetti with eggs, cheese, pancetta, and black pepper.</p>
+                <button class="add-button" onclick="addItemToOrder('Pasta Carbonara', 12.50)">Add to Order</button>
             </div>
         </div>
         <div class="menu-item" id="item-3" data-item-name="Chocolate Cake" data-item-price="6.75">
-            <div class="item-click-area">
-                <img src="cake.jpg" alt="Chocolate Cake" class="item-image">
-                <div class="item-details">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span class="item-name">Chocolate Cake</span>
-                        <span class="item-price">&#8377;6.75</span>
-                    </div>
-                    <p class="item-description">Rich chocolate cake with chocolate frosting.</p>
+            <img src="cake.jpg" alt="Chocolate Cake" class="item-image">
+            <div class="item-details">
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="item-name">Chocolate Cake</span>
+                    <span class="item-price">&#8377;6.75</span>
                 </div>
+                <p class="item-description">Rich chocolate cake with chocolate frosting.</p>
+                <button class="add-button" onclick="addItemToOrder('Chocolate Cake', 6.75)">Add to Order</button>
             </div>
         </div>
         <a href="YOUR_GOOGLE_REVIEW_LINK_HERE" target="_blank" class="review-link">Leave us a Google Review!</a>
@@ -304,31 +333,12 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM is loaded');
-            // alert('DOM is loaded!'); // Keep this for debugging
 
             const menuItems = document.querySelectorAll('.menu-item');
-            console.log('Number of menu items found:', menuItems.length);
-
-            const order = []; // Array to store ordered items with quantities and prices
-            const orderItemsList = document.getElementById('order-items'); // Get the <ul> element
+            const orderItemsList = document.getElementById('order-items');
             const submitOrderButton = document.getElementById('submit-order-button');
 
-            menuItems.forEach(menuItem => {
-                const clickArea = menuItem.querySelector('.item-click-area');
-                if (clickArea) {
-                    clickArea.addEventListener('click', function() {
-                        console.log('Menu item clicked! (ID:', menuItem.id, ')');
-                        const itemName = menuItem.dataset.itemName;
-                        const itemPrice = parseFloat(menuItem.dataset.itemPrice);
-                        addItemToOrder(itemName, itemPrice);
-                        console.log('Order after addItemToOrder:', order);
-                        updateOrderDisplay();
-                        alert(`${itemName} added to order!`);
-                    });
-                }
-            });
-
-            submitOrderButton.addEventListener('click', submitOrder);
+            const order = []; // Array to store ordered items with quantities and prices
 
             function addItemToOrder(itemName, itemPrice) {
                 console.log('addItemToOrder called for:', itemName, itemPrice);
@@ -338,6 +348,8 @@
                 } else {
                     order.push({ name: itemName, quantity: 1, price: itemPrice });
                 }
+                updateOrderDisplay();
+                alert(`${itemName} added to order!`);
             }
 
             function updateOrderDisplay() {
@@ -355,7 +367,7 @@
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
                         <span class="math-inline">\{item\.name\}
-<<11\>div\>
+<<12\>div\>
 <button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
                             <span><span class="math-inline">\{item\.quantity\}</span\>
 <button onclick\="increaseQuantity\('</span>{item.name}')">+</button>
@@ -369,24 +381,5 @@
                 orderItemsList.appendChild(totalListItem);
             }
 
-            async function submitOrder() {
-                const tableNumberInput = document.getElementById('table-number');
-                const tableNumber = tableNumberInput.value;
-
-                if (!tableNumber) {
-                    alert('Please enter your table number.');
-                    return;
-                }
-
-                if (order.length === 0) {
-                    alert('Your order is empty. Please add items to your order.');
-                    return;
-                }
-
-                const orderData = {
-                    tableNumber: tableNumber,
-                    items: order,
-                    total: order.reduce((sum, item) => sum + item.quantity * item.price, 0)
-                };
-
-                console.log('Order Data:', order
+            // Make these functions globally accessible
+            window.decreaseQuantity = function
