@@ -206,7 +206,12 @@
                     orderItemDiv.classList.add('order-item');
                     orderItemDiv.innerHTML = `
                         <img src="${item.image}" alt="${item.name}" width="50">
-                        <span>${item.name} x ${item.quantity}</span>
+                        <span>${item.name}</span>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn decrease-quantity" data-name="${item.name}">-</button>
+                            <span class="item-quantity">${item.quantity}</span>
+                            <button class="quantity-btn increase-quantity" data-name="${item.name}">+</button>
+                        </div>
                         <span>$${(item.price * item.quantity).toFixed(2)}</span>
                     `;
                     orderItemsElement.appendChild(orderItemDiv);
@@ -214,6 +219,38 @@
                 });
 
                 orderTotalElement.textContent = `Total: $${total.toFixed(2)}`;
+
+                // Add event listeners to quantity buttons after they are created
+                const decreaseButtons = document.querySelectorAll('.decrease-quantity');
+                const increaseButtons = document.querySelectorAll('.increase-quantity');
+
+                decreaseButtons.forEach(button => {
+                    button.addEventListener('click', decreaseQuantity);
+                });
+
+                increaseButtons.forEach(button => {
+                    button.addEventListener('click', increaseQuantity);
+                });
+            }
+
+            // Function to decrease item quantity
+            function decreaseQuantity(event) {
+                const itemName = event.target.dataset.name;
+                const item = order.find(item => item.name === itemName);
+                if (item && item.quantity > 1) {
+                    item.quantity--;
+                    updateOrderDisplay();
+                }
+            }
+
+            // Function to increase item quantity
+            function increaseQuantity(event) {
+                const itemName = event.target.dataset.name;
+                const item = order.find(item => item.name === itemName);
+                if (item) {
+                    item.quantity++;
+                    updateOrderDisplay();
+                }
             }
 
             // Event listener for "Add to Order" buttons
@@ -232,14 +269,24 @@
                 if (tableNumber && order.length > 0) {
                     const orderDetails = {
                         tableNumber: tableNumber,
-                        items: order
+                        items: order,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp() // Add a timestamp
                     };
-                    // In a real application, you would send this 'orderDetails' to your server
-                    console.log("Order Details:", orderDetails);
-                    alert("Order submitted successfully!");
-                    // Reset the order after submission (optional)
-                    order = [];
-                    updateOrderDisplay();
+
+                    // Add the order to the 'orders' collection in Firestore
+                    db.collection('orders')
+                      .add(orderDetails)
+                      .then((docRef) => {
+                        console.log("Order submitted to Firestore with ID: ", docRef.id);
+                        alert("Order submitted successfully!");
+                        // Reset the order after successful submission
+                        order = [];
+                        updateOrderDisplay();
+                      })
+                      .catch((error) => {
+                        console.error("Error adding order to Firestore: ", error);
+                        alert("Error submitting order. Please try again.");
+                      });
                 } else {
                     alert("Please enter a table number and add items to your order.");
                 }
