@@ -212,129 +212,130 @@
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
         
-           import db from './firebase-config.js';
-           import { collection, addDoc, getFirestore } from "firebase/firestore";
-           import { serverTimestamp } from "firebase/firestore"; // Import serverTimestamp
+          import db from './firebase-config.js';
+import { collection, addDoc, getFirestore } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore"; // Import serverTimestamp
 
-            document.addEventListener('DOMContentLoaded', function () {
-            const addToOrderButtons = document.querySelectorAll('.add-to-order');
-            const orderItemsElement = document.querySelector('.order-items');
-            const orderTotalElement = document.querySelector('.order-total');
-            const submitOrderButton = document.getElementById('submit-order');
+document.addEventListener('DOMContentLoaded', function () {
+    const addToOrderButtons = document.querySelectorAll('.add-to-order');
+    const orderItemsElement = document.querySelector('.order-items');
+    const orderTotalElement = document.querySelector('.order-total');
+    const submitOrderButton = document.getElementById('submit-order');
 
-            let order = [];
+    let order = [];
 
-            // Function to add an item to the order
-            function addItemToOrder(name, price, image) {
-                const existingItem = order.find(item => item.name === name);
-                if (existingItem) {
-                    existingItem.quantity++;
-                } else {
-                    order.push({
-                        name: name,
-                        price: price,
-                        quantity: 1,
-                        image: image
-                    });
-                }
-                updateOrderDisplay();
-            }
-
-            // Function to update the order display
-            function updateOrderDisplay() {
-                orderItemsElement.innerHTML = '';
-                let total = 0;
-
-                order.forEach(item => {
-                    const orderItemDiv = document.createElement('div');
-                    orderItemDiv.classList.add('order-item');
-                    orderItemDiv.innerHTML = `
-                        <img src="${item.image}" alt="${item.name}" width="50">
-                        <span>${item.name}</span>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn decrease-quantity" data-name="${item.name}">-</button>
-                            <span class="item-quantity">${item.quantity}</span>
-                            <button class="quantity-btn increase-quantity" data-name="${item.name}">+</button>
-                        </div>
-                        <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
-                    `; // Display Rupees
-                    orderItemsElement.appendChild(orderItemDiv);
-                    total += item.price * item.quantity;
-                });
-
-                orderTotalElement.textContent = `Total: ₹ ${total.toFixed(2)}`; // Display Rupees
-
-                // Add event listeners to quantity buttons after they are created
-                const decreaseButtons = document.querySelectorAll('.decrease-quantity');
-                const increaseButtons = document.querySelectorAll('.increase-quantity');
-
-                decreaseButtons.forEach(button => {
-                    button.addEventListener('click', decreaseQuantity);
-                });
-
-                increaseButtons.forEach(button => {
-                    button.addEventListener('click', increaseQuantity);
-                });
-            }
-
-            // Function to decrease item quantity
-            function decreaseQuantity(event) {
-                const itemName = event.target.dataset.name;
-                const item = order.find(item => item.name === itemName);
-                if (item && item.quantity > 1) {
-                    item.quantity--;
-                    updateOrderDisplay();
-                }
-            }
-
-            // Function to increase item quantity
-            function increaseQuantity(event) {
-                const itemName = event.target.dataset.name;
-                const item = order.find(item => item.name === itemName);
-                if (item) {
-                    item.quantity++;
-                    updateOrderDisplay();
-                }
-            }
-
-            // Event listener for "Add to Order" buttons
-            addToOrderButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const name = this.dataset.name;
-                    const price = parseFloat(this.dataset.price);
-                    const image = this.dataset.image;
-                    addItemToOrder(name, price, image);
-                });
+    // Function to add an item to the order
+    function addItemToOrder(name, price, image) {
+        const existingItem = order.find(item => item.name === name);
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            order.push({
+                name: name,
+                price: price,
+                quantity: 1,
+                image: image
             });
+        }
+        updateOrderDisplay();
+    }
 
-            // Event listener for "Submit Order" button
-            submitOrderButton.addEventListener('click', function () {
-                const tableNumber = document.getElementById('table-number').value;
-                if (tableNumber && order.length > 0) {
-                    const orderDetails = {
-                        tableNumber: tableNumber,
-                        items: order,
-                        timestamp: serverTimestamp() // Add a timestamp
-                    };
+    // Function to update the order display
+    function updateOrderDisplay() {
+        orderItemsElement.innerHTML = '';
+        let total = 0;
 
-                    // Add the order to the 'orders' collection in Firestore
-                    addDoc(collection(db, 'orders'), orderDetails)
-                        .then((docRef) => {
-                            console.log("Order submitted to Firestore with ID: ", docRef.id);
-                            alert("Order submitted successfully!");
-                            // Reset the order after successful submission
-                            order = [];
-                            updateOrderDisplay();
-                        })
-                        .catch((error) => {
-                            console.error("Error adding order to Firestore: ", error);
-                            alert("Error submitting order. Please try again.");
-                        });
-                } else {
-                    alert("Please enter a table number and add items to your order.");
-                }
-            });
+        order.forEach(item => {
+            const orderItemDiv = document.createElement('div');
+            orderItemDiv.classList.add('order-item');
+            orderItemDiv.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" width="50">
+                <span>${item.name}</span>
+                <div class="quantity-controls">
+                    <button class="quantity-btn decrease-quantity" data-name="${item.name}">-</button>
+                    <span class="item-quantity">${item.quantity}</span>
+                    <button class="quantity-btn increase-quantity" data-name="${item.name}">+</button>
+                </div>
+                <span>₹ ${(item.price * item.quantity).toFixed(2)}</span>
+            `; // Display Rupees
+            orderItemsElement.appendChild(orderItemDiv);
+            total += item.price * item.quantity;
         });
+
+        orderTotalElement.textContent = `Total: ₹ ${total.toFixed(2)}`; // Display Rupees
+
+        // Add event listeners to quantity buttons after they are created
+        const decreaseButtons = document.querySelectorAll('.decrease-quantity');
+        const increaseButtons = document.querySelectorAll('.increase-quantity');
+
+        decreaseButtons.forEach(button => {
+            button.addEventListener('click', decreaseQuantity);
+        });
+
+        increaseButtons.forEach(button => {
+            button.addEventListener('click', increaseQuantity);
+        });
+    }
+
+    // Function to decrease item quantity
+    function decreaseQuantity(event) {
+        const itemName = event.target.dataset.name;
+        const item = order.find(item => item.name === itemName);
+        if (item && item.quantity > 1) {
+            item.quantity--;
+            updateOrderDisplay();
+        }
+    }
+
+    // Function to increase item quantity
+    function increaseQuantity(event) {
+        const itemName = event.target.dataset.name;
+        const item = order.find(item => item.name === itemName);
+        if (item) {
+            item.quantity++;
+            updateOrderDisplay();
+        }
+    }
+
+    // Event listener for "Add to Order" buttons
+    addToOrderButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const name = this.dataset.name;
+            const price = parseFloat(this.dataset.price);
+            const image = this.dataset.image;
+            addItemToOrder(name, price, image);
+        });
+    });
+
+    // Event listener for "Submit Order" button
+    submitOrderButton.addEventListener('click', function () {
+        const tableNumber = document.getElementById('table-number').value;
+        if (tableNumber && order.length > 0) {
+            const orderDetails = {
+                tableNumber: tableNumber,
+                items: order,
+                timestamp: serverTimestamp() // Add a timestamp
+            };
+
+            // Add the order to the 'orders' collection in Firestore
+            addDoc(collection(db, 'orders'), orderDetails)
+                .then((docRef) => {
+                    console.log("Order submitted to Firestore with ID: ", docRef.id);
+                    alert("Order submitted successfully!");
+                    // Reset the order after successful submission
+                    order = [];
+                    updateOrderDisplay();
+                })
+                .catch((error) => {
+                    console.error("Error adding order to Firestore: ", error);
+                    alert("Error submitting order. Please try again.");
+                });
+            } else {
+                alert("Please enter a table number and add items to your order.");
+            }
+        });
+    });
+});
     </script>
 </body>
 
