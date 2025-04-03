@@ -1,123 +1,27 @@
 <!DOCTYPE html>
-<html lang="en-IN">
-<head>
-    <title>Our Delicious Menu</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        /* ... your CSS ... */
-    </style>
-</head>
-<body lang="en-IN">
-    <div class="header">
-        <img src="hotel-logo.png" alt="Hotel Logo" class="logo">
-        <p class="location">Opposite To Railway Station, MG Road, Bangalore, India</p>
-        <div class="social-media">
-            <a href="#" class="social-icon facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-icon twitter" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-icon linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="social-icon instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-        </div>
-    </div>
-    <div class="container">
-        <h1>Our Delicious Menu</h1>
-        <div class="menu-item" id="item-1" data-item-name="Pizza Margherita" data-item-price="10.00">
-            <img src="pizza.jpg" alt="Pizza Margherita" class="item-image">
-            <div class="item-details">
-                <div style="display: flex; justify-content: space-between;">
-                    <span class="item-name">Pizza Margherita</span>
-                    <span class="item-price">&#8377;10.00</span>
-                </div>
-                <p class="item-description">Classic pizza with tomato, mozzarella, and basil.</p>
-                <button class="add-button" onclick="addItemToOrder('Pizza Margherita', 10.00)">Add to Order</button>
-            </div>
-        </div>
-        <div class="menu-item" id="item-2" data-item-name="Pasta Carbonara" data-item-price="12.50">
-            <img src="pasta.jpg" alt="Pasta Carbonara" class="item-image">
-            <div class="item-details">
-                <div style="display: flex; justify-content: space-between;">
-                    <span class="item-name">Pasta Carbonara</span>
-                    <span class="item-price">&#8377;12.50</span>
-                </div>
-                <p class="item-description">Spaghetti with eggs, cheese, pancetta, and black pepper.</p>
-                <button class="add-button" onclick="addItemToOrder('Pasta Carbonara', 12.50)">Add to Order</button>
-            </div>
-        </div>
-        <div class="menu-item" id="item-3" data-item-name="Chocolate Cake" data-item-price="6.75">
-            <img src="cake.jpg" alt="Chocolate Cake" class="item-image">
-            <div class="item-details">
-                <div style="display: flex; justify-content: space-between;">
-                    <span class="item-name">Chocolate Cake</span>
-                    <span class="item-price">&#8377;6.75</span>
-                </div>
-                <p class="item-description">Rich chocolate cake with chocolate frosting.</p>
-                <button class="add-button" onclick="addItemToOrder('Chocolate Cake', 6.75)">Add to Order</button>
-            </div>
-        </div>
-        <a href="YOUR_GOOGLE_REVIEW_LINK_HERE" target="_blank" class="review-link">Leave us a Google Review!</a>
-    </div>
-    <div class="order-summary">
-        <h2>Your Order</h2>
-        <label for="table-number">Table Number:</label>
-        <input type="number" id="table-number" name="table-number" min="1" required>
-        <ul id="order-items">
-        </ul>
-        <button id="submit-order-button">Place Order</button>
-    </div>
-    <div class="footer">
-        &copy; 2025 Your Hotel Name
-    </div>
-
-   <script type="module">
-        // Import Firebase
-        import { initializeApp } from "firebase/app";
-        import { getFirestore, collection, addDoc } from "firebase/firestore";
-
-        // Firebase Config
-        const firebaseConfig = { /* ... */ };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Declare 'order' in the global scope
-        window.order = [];
-
-        // Declare addItemToOrder in the global scope
-        window.addItemToOrder = function(itemName, itemPrice) {
-            console.log('addItemToOrder called for:', itemName, itemPrice);
-            const existingItem = window.order.find(item => item.name === itemName); // Access 'window.order'
-            if (existingItem) {
-                existingItem.quantity++;
-            } else {
-                window.order.push({ name: itemName, quantity: 1, price: itemPrice }); // Access 'window.order'
-            }
-            updateOrderDisplay(); // This function is inside DOMContentLoaded
-            alert(`${itemName} added to order!`);
-        };
-
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM is loaded');
-
-            const menuItems = document.querySelectorAll('.menu-item');
-            const orderItemsList = document.getElementById('order-items');
-            const submitOrderButton = document.getElementById('submit-order-button');
-
-            function updateOrderDisplay() {
-                // ... your updateOrderDisplay logic using 'order' ...
-            }
-
-            window.decreaseQuantity = function decreaseQuantity(itemName) {
-                // ... your decreaseQuantity logic using 'order' ...
-            }
-
-            window.increaseQuantity = function increaseQuantity(itemName) {
-                // ... your increaseQuantity logic using 'order' ...
-            }
-
-            async function submitOrder() {
-                // ... your submitOrder logic using 'order' ...
-            }
-
-            updateOrderDisplay();
-        });
-    </script>
+   <html lang="en">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Restaurant Menu</title>
+       <link rel="stylesheet" href="style.css"> 
+   </head>
+   <body>
+       <div class="container">
+           <h1>Restaurant Menu</h1>
+           <div class="menu-item">
+               <h2>Pizza</h2>
+               <p>Delicious pizza with tomato sauce, cheese, and your choice of toppings.</p>
+               <p class="price">$10.99</p>
+               <button class="add-to-order">Add to Order</button>
+           </div>
+           <div class="menu-item">
+               <h2>Burger</h2>
+               <p>Classic burger with lettuce, tomato, and onion.</p>
+               <p class="price">$8.99</p>
+               <button class="add-to-order">Add to Order</button>
+           </div>
+       </div>
+       <script src="script.js"></script>
+   </body>
+   </html>
