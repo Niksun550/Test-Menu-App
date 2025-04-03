@@ -190,6 +190,10 @@
     </div>
 
     <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
         // Replace with your actual Firebase project configuration
         const firebaseConfig = {
   apiKey: "AIzaSyAkwiKjPYsv4LlRQLTxH6kj15xlCnvoXKA",
@@ -202,9 +206,8 @@
 };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
         document.addEventListener('DOMContentLoaded', function () {
             const addToOrderButtons = document.querySelectorAll('.add-to-order');
             const orderItemsElement = document.querySelector('.order-items');
