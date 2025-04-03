@@ -309,7 +309,7 @@
         &copy; 2025 Your Hotel Name
     </div>
 
-    <script type="module">
+   <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "firebase/app";
         import { getFirestore, collection, addDoc } from "firebase/firestore";
@@ -323,6 +323,7 @@
   messagingSenderId: "98263305480",
   appId: "1:98263305480:web:024158941cb5f53225f0bd",
   measurementId: "G-CX0JDH1RDP",
+
         };
 
         // Initialize Firebase
@@ -332,9 +333,8 @@
         const db = getFirestore(app);
 
         // Declare addItemToOrder in the global scope
-        window.addItemToOrder = function(itemName, itemPrice); 
-        {
-        console.log('addItemToOrder called for:', itemName, itemPrice);
+        window.addItemToOrder = function(itemName, itemPrice) {
+            console.log('addItemToOrder called for:', itemName, itemPrice);
             const existingItem = order.find(item => item.name === itemName);
             if (existingItem) {
                 existingItem.quantity++;
@@ -368,11 +368,11 @@
                     console.log('Current total:', total);
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
-                        <span class="math-inline">\{item\.name\}
-<<12\>div\>
-<button onclick\="decreaseQuantity\('</span>{item.name}')">-</button>
-                            <span><span class="math-inline">\{item\.quantity\}</span\>
-<button onclick\="increaseQuantity\('</span>{item.name}')">+</button>
+                        ${item.name}
+                        <div>
+                            <button onclick="decreaseQuantity('${item.name}')">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="increaseQuantity('${item.name}')">+</button>
                             <span style="margin-left: 10px">&#8377;${itemTotal.toFixed(2)}</span>
                         </div>
                     `;
@@ -382,9 +382,62 @@
                 totalListItem.textContent = `Total: &#8377;${total.toFixed(2)}`;
                 orderItemsList.appendChild(totalListItem);
             }
-// Initial call to update display if there's anything in the order (e.g., after page refresh)
+
+            window.decreaseQuantity = function decreaseQuantity(itemName) {
+                const item = order.find(item => item.name === itemName);
+                if (item && item.quantity > 1) {
+                    item.quantity--;
+                    updateOrderDisplay();
+                }
+            }
+
+            window.increaseQuantity = function increaseQuantity(itemName) {
+                const item = order.find(item => item.name === itemName);
+                if (item) {
+                    item.quantity++;
+                    updateOrderDisplay();
+                }
+            }
+
+            async function submitOrder() {
+                const tableNumberInput = document.getElementById('table-number');
+                const tableNumber = tableNumberInput.value;
+
+                if (!tableNumber) {
+                    alert('Please enter your table number.');
+                    return;
+                }
+
+                if (order.length === 0) {
+                    alert('Your order is empty. Please add items to your order.');
+                    return;
+                }
+
+                const orderData = {
+                    tableNumber: tableNumber,
+                    items: order,
+                    total: order.reduce((sum, item) => sum + item.quantity * item.price, 0),
+                    timestamp: new Date() // Add timestamp for ordering
+                };
+
+                console.log('Order Data:', orderData);
+
+                try {
+                    // **Important:** Replace 'orders' with the actual name of your Firestore collection
+                    const docRef = await addDoc(collection(db, 'orders'), orderData);
+                    console.log('Order submitted successfully! Document ID:', docRef.id);
+                    alert('Order submitted successfully!');
+                    // Optionally clear the order display
+                    order.length = 0;
+                    updateOrderDisplay();
+                    tableNumberInput.value = ''; // Clear the table number input
+                } catch (error) {
+                    console.error("Error submitting order: ", error);
+                    alert("Error submitting order. Please try again.");
+                }
+            }
+
+            // Initial call to update display if there's anything in the order (e.g., after page refresh)
             updateOrderDisplay();
         });
     </script>
-</body>
-</html>
