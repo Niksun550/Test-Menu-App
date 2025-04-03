@@ -103,19 +103,25 @@
                font-weight: bold;
                font-size: 1.1em;
            }
+   
+           .menu-item img {
+               max-width: 100px; /* Adjust size as needed */
+               height: auto;
+               margin-right: 10px;
+           }
        </style>
    </head>
    <body>
        <div class="container">
            <h1>Restaurant Menu</h1>
            <div class="menu-item">
-               <h2>Pizza</h2>
+               <img src="pizza.jpg" alt="Pizza">              <h2>Pizza</h2>
                <p>Delicious pizza with tomato sauce, cheese, and your choice of toppings.</p>
                <p class="price">$10.99</p>
                <button class="add-to-order">Add to Order</button>
            </div>
            <div class="menu-item">
-               <h2>Burger</h2>
+               <img src="burger.jpg" alt="Burger">              <h2>Burger</h2>
                <p>Classic burger with lettuce, tomato, and onion.</p>
                <p class="price">$8.99</p>
                <button class="add-to-order">Add to Order</button>
@@ -143,18 +149,19 @@
                    const menuItem = event.target.parentElement;
                    const itemName = menuItem.querySelector('h2').textContent;
                    const itemPrice = parseFloat(menuItem.querySelector('.price').textContent.slice(1));
+                   const itemImage = menuItem.querySelector('img').src;  // Get image source
    
-                   addToCart(itemName, itemPrice);
+                   addToCart(itemName, itemPrice, itemImage);
                    updateCartDisplay();
                }
    
-               function addToCart(name, price) {
+               function addToCart(name, price, image) {
                    const existingCartItem = cart.find(item => item.name === name);
    
                    if (existingCartItem) {
                        existingCartItem.quantity++;
                    } else {
-                       cart.push({ name: name, price: price, quantity: 1 });
+                       cart.push({ name: name, price: price, quantity: 1, image: image });  // Store image
                    }
                }
    
@@ -166,6 +173,7 @@
                        const cartItemDiv = document.createElement('div');
                        cartItemDiv.classList.add('cart-item');
                        cartItemDiv.innerHTML = `
+                           <img src="${item.image}" alt="${item.name}" style="max-width: 50px; height: auto; margin-right: 10px;">
                            <span>${item.name} x ${item.quantity}</span>
                            <span>$${(item.price * item.quantity).toFixed(2)}</span>
                        `;
