@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
        const addToOrderButtons = document.querySelectorAll('.add-to-order');
+       const cartItemsElement = document.querySelector('.cart-items'); // Assuming we have a div with class 'cart-items' to display cart items
+       const cartTotalElement = document.querySelector('.cart-total');   // Assuming we have an element with class 'cart-total' to display total
+       let cart = [];
    
        addToOrderButtons.forEach(button => {
            button.addEventListener('click', handleAddToOrder);
@@ -8,30 +11,37 @@ document.addEventListener('DOMContentLoaded', function() {
        function handleAddToOrder(event) {
            const menuItem = event.target.parentElement;
            const itemName = menuItem.querySelector('h2').textContent;
-           const itemPrice = menuItem.querySelector('.price').textContent;
+           const itemPrice = parseFloat(menuItem.querySelector('.price').textContent.slice(1)); // Remove the '$' and parse as float
    
-           // Basic implementation: Log the item details to the console
-           console.log(`Added to order: ${itemName} - ${itemPrice}`);
-   
-           // You would typically add this item to an order/cart array
-           // and update the UI to reflect the current order.
-           // For example:
-           // addToCart(itemName, itemPrice);
-           // updateCartDisplay();
+           addToCart(itemName, itemPrice);
+           updateCartDisplay();
        }
    
-       // Example functions (you'll need to implement these)
        function addToCart(name, price) {
-           // Logic to add item to the cart
-           // This could involve storing items in an array
-           // and updating the cart display.
-           console.log("Add to cart function called")
+           const existingCartItem = cart.find(item => item.name === name);
+   
+           if (existingCartItem) {
+               existingCartItem.quantity++;
+           } else {
+               cart.push({ name: name, price: price, quantity: 1 });
+           }
        }
    
        function updateCartDisplay() {
-           // Logic to update the cart display on the page
-           // This would involve dynamically creating or modifying
-           // HTML elements to show the items in the cart.
-           console.log("update cart display function called")
+           cartItemsElement.innerHTML = ''; // Clear previous cart display
+           let total = 0;
+   
+           cart.forEach(item => {
+               const cartItemDiv = document.createElement('div');
+               cartItemDiv.classList.add('cart-item'); // Add class for styling
+               cartItemDiv.innerHTML = `
+                   <span>${item.name} x ${item.quantity}</span>
+                   <span>$${(item.price * item.quantity).toFixed(2)}</span>
+               `;
+               cartItemsElement.appendChild(cartItemDiv);
+               total += item.price * item.quantity;
+           });
+   
+           cartTotalElement.textContent = `Total: $${total.toFixed(2)}`;
        }
    });
